@@ -64,7 +64,9 @@ export default class UserController {
 
       await trx.commit();
 
-      return res.status(200).send();
+      const newUserData = await db('users').where('id', id).select(['users.*']);
+
+      return res.status(200).json({ user: newUserData[0] });
     } catch (err) {
       console.log(err);
 
