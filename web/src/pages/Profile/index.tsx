@@ -54,12 +54,38 @@ const label_week_day = [
   'Sábado',
 ];
 
+interface Data {
+  value: number | string;
+  label: string;
+}
+
+interface Subject {
+  id: number | string;
+  subject: string;
+}
+
 const Profile: React.FC = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
   const { user, updateUser } = useAuth();
   const { addToast } = useToast();
+
+  const [subjects, setSubjects] = useState<Array<Data>>([]);
+
+  useEffect(() => {
+    async function getSubjects(): Promise<void> {
+      const response = await api.get('/subjects');
+
+      const allSubjects = await response.data.map(
+        ({ id: value, subject: label }: Subject) => ({ value, label }),
+      );
+
+      setSubjects(allSubjects);
+    }
+
+    getSubjects();
+  }, []);
 
   const [userData, setUserData] = useState({} as UserData);
   const [scheduleItems, setScheduleItems] = useState<Array<ScheduleItem>>([
@@ -82,7 +108,7 @@ const Profile: React.FC = () => {
 
       formRef.current?.setData({
         cost: response.data?.cost,
-        subject: response.data?.subject,
+        subject: response.data?.subject_id,
         name: response.data?.name.split(' ')[0],
         lastname: response.data?.name.split(' ')[1],
         email: response.data?.email,
@@ -237,18 +263,7 @@ const Profile: React.FC = () => {
                       name="subject"
                       value={userData.subject}
                       label="Disciplina"
-                      options={[
-                        { value: 'Artes', label: 'Artes' },
-                        { value: 'História', label: 'História' },
-                        { value: 'Português', label: 'Português' },
-                        { value: 'Inglês', label: 'Inglês' },
-                        { value: 'Geografia', label: 'Geografia' },
-                        { value: 'Matemática', label: 'Matemática' },
-                        { value: 'Física', label: 'Física' },
-                        { value: 'Química', label: 'Química' },
-                        { value: 'Biologia', label: 'Biologia' },
-                        { value: 'Filosofia', label: 'Filosofia' },
-                      ]}
+                      options={subjects}
                     />
 
                     <Input name="cost" label="Custo (valor hora)" />

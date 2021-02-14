@@ -22,6 +22,7 @@ import rocket from '../../assets/images/icons/rocket.svg';
 import { TeacherFormPage, PageContent, FormFields, FormFooter } from './styles';
 
 interface ScheduleItem {
+  id: number;
   week_day: number;
   from: string;
   to: string;
@@ -45,6 +46,16 @@ const label_week_day = [
   'Sábado',
 ];
 
+interface Data {
+  value: number | string;
+  label: string;
+}
+
+interface Subject {
+  id: number | string;
+  subject: string;
+}
+
 const TeacherForm: React.FC = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
@@ -52,9 +63,26 @@ const TeacherForm: React.FC = () => {
   const { user, updateUser } = useAuth();
   const { addToast } = useToast();
 
+  const [subjects, setSubjects] = useState<Array<Data>>([]);
+
+  useEffect(() => {
+    async function getSubjects(): Promise<void> {
+      const response = await api.get('/subjects');
+
+      const allSubjects = await response.data.map(
+        ({ id: value, subject: label }: Subject) => ({ value, label }),
+      );
+
+      setSubjects(allSubjects);
+    }
+
+    getSubjects();
+  }, []);
+
   const [userData, setUserData] = useState({} as UserData);
   const [scheduleItems, setScheduleItems] = useState<Array<ScheduleItem>>([
     {
+      id: 0,
       week_day: 0,
       from: '',
       to: '',
@@ -73,6 +101,8 @@ const TeacherForm: React.FC = () => {
       formRef.current?.setData({
         whatsapp: response.data?.whatsapp,
         bio: response.data?.bio,
+        subject: response.data?.subject_id,
+        cost: response.data?.cost,
       });
     }
 
@@ -174,22 +204,7 @@ const TeacherForm: React.FC = () => {
               <legend>Sobre a aula</legend>
 
               <div className="subjectfields">
-                <Select
-                  name="subject"
-                  label="Disciplina"
-                  options={[
-                    { value: 'Artes', label: 'Artes' },
-                    { value: 'História', label: 'História' },
-                    { value: 'Português', label: 'Português' },
-                    { value: 'Inglês', label: 'Inglês' },
-                    { value: 'Geografia', label: 'Geografia' },
-                    { value: 'Matemática', label: 'Matemática' },
-                    { value: 'Física', label: 'Física' },
-                    { value: 'Química', label: 'Química' },
-                    { value: 'Biologia', label: 'Biologia' },
-                    { value: 'Filosofia', label: 'Filosofia' },
-                  ]}
-                />
+                <Select name="subject" label="Disciplina" options={subjects} />
 
                 <Input name="cost" label="Custo (valor/hora)" />
               </div>
@@ -203,11 +218,11 @@ const TeacherForm: React.FC = () => {
                 </button>
               </legend>
               {scheduleItems.map((schedule, index) => (
-                <div key={index} className="schedule-item">
+                <div key={schedule.id} className="schedule-item">
                   <Select
                     name={`schedule[${index}].week_day`}
                     label="Dia da semana"
-                    value={schedule.week_day}
+                    value={String(schedule.week_day)}
                     options={[
                       { value: 0, label: label_week_day[0] },
                       { value: 1, label: label_week_day[1] },

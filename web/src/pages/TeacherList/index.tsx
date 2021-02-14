@@ -18,10 +18,36 @@ interface FormData {
   time: string;
 }
 
+interface Data {
+  value: number | string;
+  label: string;
+}
+
+interface Subject {
+  id: number | string;
+  subject: string;
+}
+
 const TeacherList: React.FC = () => {
   const [classes, setClasses] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(1);
+
+  const [subjects, setSubjects] = useState<Array<Data>>([]);
+
+  useEffect(() => {
+    async function getSubjects(): Promise<void> {
+      const response = await api.get('/subjects');
+
+      const allSubjects = await response.data.map(
+        ({ id: value, subject: label }: Subject) => ({ value, label }),
+      );
+
+      setSubjects(allSubjects);
+    }
+
+    getSubjects();
+  }, []);
 
   useEffect(() => {
     async function loadClasses(): Promise<void> {
@@ -52,7 +78,7 @@ const TeacherList: React.FC = () => {
     });
 
     setClasses(response.data.Teachers);
-    setCount(response.data.pages);
+    setCount(response.data.count);
   };
 
   function handlePageCounter(pageNumber: number): void {
@@ -71,22 +97,7 @@ const TeacherList: React.FC = () => {
         )}
       >
         <SearchTeacher onSubmit={searchTeachers}>
-          <Select
-            name="subject"
-            label="Disciplina"
-            options={[
-              { value: 'Artes', label: 'Artes' },
-              { value: 'História', label: 'História' },
-              { value: 'Português', label: 'Português' },
-              { value: 'Inglês', label: 'Inglês' },
-              { value: 'Geografia', label: 'Geografia' },
-              { value: 'Matemática', label: 'Matemática' },
-              { value: 'Física', label: 'Física' },
-              { value: 'Química', label: 'Química' },
-              { value: 'Biologia', label: 'Biologia' },
-              { value: 'Filosofia', label: 'Filosofia' },
-            ]}
-          />
+          <Select name="subject" label="Disciplina" options={subjects} />
           <Select
             name="week_day"
             label="Dia da semana"
