@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
   },
   
   buttonsContainer: {
+    width: '100%',
     flexDirection: 'row',
     marginTop: 16,
   },
@@ -95,7 +96,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 8,
   },
 
   contactButtonText: {
