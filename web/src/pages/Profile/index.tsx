@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { addToast } = useToast();
 
   const [userData, setUserData] = useState({} as UserData);
@@ -121,13 +121,15 @@ const Profile: React.FC = () => {
 
       const { bio, avatar, email, name, lastname, whatsapp } = data;
 
-      await api.put('/users', {
+      const response = await api.put('/users', {
         name: `${name} ${lastname}`,
         email,
         whatsapp,
         bio,
         avatar,
       });
+
+      updateUser(response.data.user);
 
       if (userData.subject) {
         const { subject, cost, schedule } = data;

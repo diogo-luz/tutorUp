@@ -38,6 +38,7 @@ interface AuthContextData {
   signed: boolean;
   user: UserData | null;
   signIn(credentials: SignInCredentials): Promise<void>;
+  updateUser(user: UserData): void;
   signOut(): void;
 }
 
@@ -58,7 +59,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         const sessionUser = sessionStorage.getItem('@TutorUp:user');
         const sessionToken = sessionStorage.getItem('@TutorUp:token');
 
-        if (sessionUser && sessionUser) {
+        if (sessionUser && sessionToken) {
           setUser(JSON.parse(sessionUser));
           api.defaults.headers.Authorization = `Bearer ${sessionToken}`;
         }
@@ -107,12 +108,25 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUser({} as UserData);
   }, []);
 
+  const updateUser = useCallback(async (updatedUser: UserData) => {
+    const storagedUser = localStorage.getItem('@TutorUp:user');
+
+    if (storagedUser) {
+      localStorage.setItem('@TutorUp:user', JSON.stringify(updatedUser));
+    } else {
+      sessionStorage.setItem('@TutorUp:user', JSON.stringify(updatedUser));
+    }
+
+    setUser(updatedUser);
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         signed: !!user,
         user,
         signIn,
+        updateUser,
         signOut,
       }}
     >
