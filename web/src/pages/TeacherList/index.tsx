@@ -71,6 +71,7 @@ const TeacherList: React.FC = () => {
   }) => {
     const response = await api.get('/classes', {
       params: {
+        page,
         subject,
         week_day,
         time,
@@ -83,6 +84,14 @@ const TeacherList: React.FC = () => {
 
   function handlePageCounter(pageNumber: number): void {
     setPage(pageNumber);
+  }
+
+  function getCount(counterNumber: number): number {
+    if (counterNumber % 2 !== 0) {
+      return counterNumber < 3 ? 1 : Math.round(counterNumber / 3) + 1;
+    }
+
+    return counterNumber < 3 ? 1 : Math.round(counterNumber / 3);
   }
 
   return (
@@ -123,7 +132,7 @@ const TeacherList: React.FC = () => {
         ))}
       </List>
       <Pages
-        count={count < 10 ? 1 : Math.round(count / 10)}
+        count={getCount(count)}
         page={page}
         size="large"
         onChange={(event, page) => handlePageCounter(page)}
