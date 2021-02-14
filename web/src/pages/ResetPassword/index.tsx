@@ -40,7 +40,19 @@ const ResetPassword: React.FC = () => {
       await schema.validate(data, { abortEarly: false });
 
       // validation passed
-      api.post(`/reset-password`, { email: data.email });
+      const response = await api.post(`/reset-password`, { email: data.email });
+
+      if (response.status !== 201) {
+        // disparar um toast
+        addToast({
+          type: 'error',
+          title: 'Erro na recuperação',
+          description:
+            'Ocorreu um erro ao efetuar a recuperação da sua conta, colocou um email válido?',
+        });
+
+        return;
+      }
 
       history.push('/reset-password-success');
     } catch (err) {
@@ -57,7 +69,7 @@ const ResetPassword: React.FC = () => {
         type: 'error',
         title: 'Erro na recuperação',
         description:
-          'Ocorreu um erro ao efetuar a recuperação da sua conta, colocou um email válido?',
+          'Ocorreu um erro ao efetuar a recuperação da sua conta, tente novamente.',
       });
     }
   };
