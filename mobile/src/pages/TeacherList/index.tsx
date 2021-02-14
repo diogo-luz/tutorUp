@@ -11,11 +11,39 @@ import TeacherItem, { Teacher } from '../../components/TeacherItem';
 import styles from './styles';
 import api from '../../services/api';
 
+interface Data {
+  value: number | string;
+  label: string;
+}
+
+interface Subject {
+  id: number | string;
+  subject: string;
+}
+
 function TeacherList() {
   const [classes, setClasses] = useState([]);
   const [favorites, setFavorites] = useState<number[]>([]);
 
   const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+  const [subjects, setSubjects] = useState<Array<Data>>([]);
+
+  useEffect(() => {
+    async function getSubjects(): Promise<void> {
+      const response = await api.get('/subjects');
+
+      const allSubjects = await response.data.map(
+        ({ id: value, subject: label }: Subject) => ({ value, label }),
+      );
+
+      allSubjects.unshift({value: '', label: 'Selecionar'});
+
+      setSubjects(allSubjects);
+    }
+
+    getSubjects();
+  }, []);
 
   const [subject, setSubject] = useState('');
   const [week_day, setWeekDay] = useState('');
@@ -130,17 +158,7 @@ function TeacherList() {
                 <Text style={styles.label}>Disciplina</Text>
                 <Select
                   selectedValue={subject}
-                  items={[
-                    {value: '', label: 'Selecionar'},
-                    { value: 'Português', label: 'Português' },
-                    { value: 'Matemática', label: 'Matemática' },
-                    { value: 'Geografia', label: 'Geografia' },
-                    { value: 'História', label: 'História' },
-                    { value: 'Química', label: 'Química' },
-                    { value: 'Física', label: 'Física' },
-                    { value: 'Biologia', label: 'Biologia' },
-                    { value: 'Inglês', label: 'Inglês' },
-                  ]}
+                  items={subjects}
                   onValueChange={async (value) => {
                     setSubject(value);                 
                   }}

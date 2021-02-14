@@ -6,7 +6,7 @@ import styles from './styles';
 
 interface SelectProps extends PickerProps {
   label?: string;
-  items: Array<{ value: string; label: string }>;
+  items: Array<{ value: string | number; label: string }>;
 }
 
 const Select: React.FC<SelectProps> = ({ label, items, ...rest }) => {
