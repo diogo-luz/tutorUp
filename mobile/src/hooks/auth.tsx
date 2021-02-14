@@ -1,74 +1,126 @@
-import React, {createContext,useState} from 'react'
-import api from '../services/api';
+import React, {
+  createContext,
+  useCallback,
+  useState,
+  useContext,
+  useEffect,
+} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-// import { NavigationHelpersContext } from '@react-navigation/native';
-
-interface  AuthContextData{
-    signed: boolean,
-    user: User | null,
-    authorization(email?:string, password?:string,UseToken?:Boolean,save?:Boolean): Promise<void>,
-    logout:Function
-}
+import api from '../services/api';
 
 interface User {
-    id:Number,
-    name:string,
-    lastName:string,
-    email:string
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  whatsapp?: string;
+  bio?: string;
 }
 
-const AuthContext = createContext <AuthContextData> ({} as AuthContextData)
+interface AuthState {
+  token: string;
+  user: User;
+}
 
-export const AuthProvider: React.FC = ({children}) => {
-    const [user,setUser] = useState<User|null>(null) 
+interface SignInCredentials {
+  email: string;
+  password: string;
+  remember?: boolean;
+}
 
-    function logout (){
+interface AuthContextData {
+  user: User | null;
+  signIn(credentials: SignInCredentials): Promise<void>;
+  signOut(): void;
+  updateUser(user: User): void;
+  loading: boolean;
+  hasVisited: boolean;
+}
 
-        // localStorage.removeItem("@Proffy/token")
-        AsyncStorage.removeItem('token')
-        setUser(null);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
+export const AuthProvider: React.FC = ({ children }) => {
+  const [data, setData] = useState<AuthState>({} as AuthState);
+  const [loading, setLoading] = useState(false);
+  const [hasVisited, setHasVisited] = useState(false);
+
+  useEffect(() => {
+    async function loadStorageData() {
+      setLoading(true);
+
+      const [token, user, firstVisit] = await AsyncStorage.multiGet([
+        '@TutorUp:token',
+        '@TutorUp:user',
+        '@TutorUp:firstVisit',
+      ]);
+
+      firstVisit[1] === 'true' ? setHasVisited(true) : setHasVisited(false);
+
+      if (token[1] && user[1]) {
+        api.defaults.headers.Authorization = `Bearer ${token[1]}`;
+
+        setData({ token: token[1], user: JSON.parse(user[1]) });
+      }
+
+      setLoading(false);
     }
-    async function authorization(email?:string,password?:string, UseToken?:Boolean,save?:Boolean){
-        
-        if (UseToken){
-            await AsyncStorage.getItem('token').then( async (response) => {
-                if (response){
-                    const respPost = await api.post("auth",{},{headers:{
-                        'authorization': `Baerer ${response}`
-                        }}
-                    )
-                    if (respPost.data !== null){
-                        setUser(respPost.data.user);
-                    }  
-                }       
-            });
-            
-            return ;
-        }
 
-        const response = await api.post("auth",{
-            email,
-            password
-        })
+    loadStorageData();
+  }, []);
 
-        if (response.data === null){            
-            alert("Erro no login")
-            setUser(null)
-            
-        }else{
-            setUser(response.data.user)
-            if (save){                
-                await AsyncStorage.setItem('token',response.data.token);
-            }
+  const signIn = useCallback(async ({ email, password, remember }: SignInCredentials) => {
+    const response = await api.post('/sessions', {
+      email,
+      password,
+    });
+    
+    const { token, user } = response.data;
 
-            alert("Login com sucesso")    
-        }
-    } return(
-        <AuthContext.Provider value= {{signed: !!user, user,authorization,logout }}>
-            {children}
-        </AuthContext.Provider>
-    )
-}
+    api.defaults.headers.Authorization = `Bearer ${token}`;
 
-export default AuthContext;
+    if (remember) {
+      await AsyncStorage.multiSet([
+        ['@TutorUp:token', token],
+        ['@TutorUp:user', JSON.stringify(user)],
+      ]);
+    }
+
+    setData({ token, user });
+  }, []);
+
+  const signOut = useCallback(async () => {
+    await AsyncStorage.multiRemove([
+      '@TutorUp:token',
+      '@TutorUp:user',
+    ]);
+
+    setData({} as AuthState);
+  }, []);
+
+  const updateUser = useCallback(
+    async (user: User) => {
+      setData({ token: data.token, user });
+
+      await AsyncStorage.setItem('@TutorUp:user', JSON.stringify(user));
+    },
+    [data.token]
+  );
+
+  return (
+    <AuthContext.Provider
+      value={{ user: data.user, signIn, signOut, updateUser, loading, hasVisited }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = (): AuthContextData => {
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+
+  return context;
+};

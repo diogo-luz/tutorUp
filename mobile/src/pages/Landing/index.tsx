@@ -1,74 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Image, Text, TouchableHighlight } from 'react-native';
+import { useNavigation, useScrollToTop } from '@react-navigation/native';
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler';
 
-import api from '../../services/api';
-
-import {
-  Container,
-  LandingImg,
-  Title,
-  TitleBold,
-  ButtonContainer,
-  Button,
-  ButtonText,
-  TotalText,
-} from './styles';
-
-import landingImg from '../../assets/images/landing.png';
+import defaultAvatar from '../../assets/images/default-avatar.png';
+import landingImage from '../../assets/images/landing.png';
 import studyIcon from '../../assets/images/icons/study.png';
 import giveClassesIcon from '../../assets/images/icons/give-classes.png';
 import heartIcon from '../../assets/images/icons/heart.png';
+import quitIcon from '../../assets/images/icons/quit.png';
 
-const Landing: React.FC = () => {
-  const navigation = useNavigation();
+import { useAuth } from '../../hooks/auth';
+import api from '../../services/api';
+
+import styles from './styles';
+
+const Landing = () => {
+  const { user, signOut } = useAuth();
+  const { navigate } = useNavigation();
   const [totalConnections, setTotalConnections] = useState(0);
 
   useEffect(() => {
-    async function getConnections() {
-      try {
-        const { data } = await api.get('/connections');
-        setTotalConnections(data.total);
-      } catch {
-        setTotalConnections(6969);
-      }
-    }
-
-    getConnections();
+    api.get('/connections').then((response) => {
+      const { total } = response.data;
+      setTotalConnections(total as number);
+    });
   }, []);
 
-  function handleGiveClasses() {
-    navigation.navigate('GiveClasses');
-  }
+  const navigateToGiveClasses = useCallback(() => {
+    navigate('GiveClasses');
+  }, []);
 
-  function handleStudy() {
-    navigation.navigate('Study');
-  }
+  const navigateToStudyTabs = useCallback(() => {
+    navigate('StudyTabs');
+  }, []);
 
   return (
-    <Container>
-      <LandingImg source={landingImg} />
-      <Title>
-        Seja bem-vindo, {'\n'}
-        <TitleBold>O que deseja fazer?</TitleBold>
-      </Title>
-      <ButtonContainer>
-        <Button onPress={handleStudy} color="#9871F5">
-          <Image source={studyIcon} />
-          <ButtonText>Estudar</ButtonText>
-        </Button>
+    <View style={styles.container}>
+      <View style={styles.banner}>
+        <View style={styles.header}>
+          <View style={styles.profile}>
+            <TouchableOpacity onPress={() => navigate('Profile')}>
+              <Image
+                source={
+                  user?.avatar ? { uri: user.avatar } : defaultAvatar
+                }
+                style={styles.avatar}
+              />
+            </TouchableOpacity>
+            <Text style={styles.userName}>
+              {user?.name}
+            </Text>
+          </View>
+          <TouchableOpacity style={styles.quitButton} onPress={() => signOut()}>
+            <Image source={quitIcon} style={styles.quitIcon} />
+          </TouchableOpacity>
+        </View>
+        <Image source={landingImage} />
+      </View>
 
-        <Button onPress={handleGiveClasses} color="#04D361">
-          <Image source={giveClassesIcon} />
-          <ButtonText>Dar aulas</ButtonText>
-        </Button>
-      </ButtonContainer>
+      <View style={styles.content}>
+        <Text style={styles.title}>
+          Seja bem-vindo, {'\n'}
+          <Text style={styles.titleBold}>O que deseja fazer?</Text>
+        </Text>
 
-      <TotalText>
-        Total de {totalConnections} conexões realizadas {'  '}
-        <Image source={heartIcon} />
-      </TotalText>
-    </Container>
+        <View style={styles.buttonsContainer}>
+          <RectButton
+            onPress={navigateToStudyTabs}
+            style={[styles.button, styles.buttonPrimary]}
+          >
+            <Image source={studyIcon} />
+            <Text style={styles.buttonText}>Estudar</Text>
+          </RectButton>
+
+          <RectButton
+            onPress={navigateToGiveClasses}
+            style={[styles.button, styles.buttonSecondary]}
+          >
+            <Image source={giveClassesIcon} />
+            <Text style={styles.buttonText}>Dar aulas</Text>
+          </RectButton>
+        </View>
+
+        <Text style={styles.totalConnections}>
+          Total de {totalConnections} conexões realizadas. {'  '}
+          <Image source={heartIcon} />
+        </Text>
+      </View>
+    </View>
   );
 };
 

@@ -1,30 +1,14 @@
 import React, { useState } from 'react';
-import { Image } from 'react-native';
-import * as Linking from 'expo-linking';
+import { View, Image, Text, Linking } from 'react-native';
+import { RectButton } from 'react-native-gesture-handler';
 
-import api from '../../services/api';
-
-import {
-  Container,
-  Profile,
-  ProfileInfo,
-  ProfileName,
-  Subject,
-  Avatar,
-  Bio,
-  Footer,
-  Price,
-  PriceValue,
-  ButtonsContainer,
-  FavButton,
-  ContactButton,
-  ContactText,
-} from './styles';
-
-import heartIcon from '../../assets/images/icons/heart-outline.png';
-import unFavIcon from '../../assets/images/icons/unfavorite.png';
+import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
+import unFavouriteIcon from '../../assets/images/icons/unfavorite.png';
 import whatsappIcon from '../../assets/images/icons/whatsapp.png';
-import AsyncStorage from '@react-native-community/async-storage';
+import defaultAvatar from '../../assets/images/default-avatar.png';
+
+import styles from './styles';
+import api from '../../services/api';
 
 export interface Teacher {
   avatar: string;
@@ -34,89 +18,103 @@ export interface Teacher {
   name: string;
   subject: string;
   whatsapp: string;
+  schedule: Array<{
+    id: number;
+    week_day: number;
+    from: string;
+    to: string;
+  }>;
+}
+
+interface DayProps {
+  name: string;
+  value: number;
+  schedule: Array<{
+    id: number;
+    week_day: number;
+    from: string;
+    to: string;
+  }>;
 }
 
 interface TeacherItemProps {
   teacher: Teacher;
   favorited: boolean;
+  show?: boolean;
 }
 
-const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, favorited }) => {
-  const [isFavorited, setIsFavorited] = useState(favorited);
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, favorited, show = true }) => {
+  {if(!show){
+    return null;
+  }}
+  
+  const [isFavorite, setIsFavorite] = useState(favorited);
 
-  function handleWhatsapp() {
-    api.post('connections', { user_id: teacher.id });
-
-    Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`);
+  function handleLinkToWhatsapp() {
+    Linking.openURL(`whatsapp://send?phone=+351${teacher.whatsapp}`)
   }
 
   async function handleToggleFavorite() {
-    const favs = await AsyncStorage.getItem('favorites');
+    if (isFavorite) {
+      // remover dos favoritos
+      await api.delete(`favorites/${teacher.id}`);
 
-    let favoritesArray = [];
-
-    if (favs) {
-      favoritesArray = JSON.parse(favs);
-    }
-
-    if (isFavorited) {
-      //remove from favs
-      const favIndex = favoritesArray.findIndex((teacherObj: Teacher) => {
-        return teacherObj.id === teacher.id;
+      setIsFavorite(false);
+    } else {
+      // adicionar aos favoritos
+      await api.post('favorites', {
+        teacher_id: teacher.id,
       });
 
-      favoritesArray.splice(favIndex, 1);
-
-      setIsFavorited(false);
-    } else {
-      // add to favs
-      favoritesArray.push(teacher);
-
-      setIsFavorited(true);
+      setIsFavorite(true);
     }
-
-    await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
   }
 
   return (
-    <Container>
-      <Profile>
-        <Avatar
-          source={{
-            uri: teacher.avatar,
-          }}
+    <View style={styles.container}>
+      <View style={styles.profile}>
+        <Image 
+          style={styles.avatar}
+          source={ teacher.avatar ? { uri: teacher.avatar } : defaultAvatar }
         />
+      </View>
 
-        <ProfileInfo>
-          <ProfileName>{teacher.name}</ProfileName>
-          <Subject>{teacher.subject}</Subject>
-        </ProfileInfo>
-      </Profile>
+      <View style={styles.profileInfo}>
+        <Text style={styles.name}>{teacher.name}</Text>
+        <Text style={styles.subject}>{teacher.subject}</Text>
+      </View>
 
-      <Bio>{teacher.bio}</Bio>
+      <Text style={styles.bio}>
+        {teacher.bio}
+      </Text>
 
-      <Footer>
-        <Price>
-          Preço/hora {'   '} <PriceValue>{teacher.cost},00 €</PriceValue>
-        </Price>
+      <View style={styles.footer}>
+        <Text style={styles.price}>
+          Preço/hora {'   '}
+          <Text style={styles.priceValue}>{teacher.cost} €</Text>
+        </Text>
 
-        <ButtonsContainer>
-          <FavButton favorited={isFavorited} onPress={handleToggleFavorite}>
-            {isFavorited ? (
-              <Image source={unFavIcon} />
-            ) : (
-              <Image source={heartIcon} />
-            )}
-          </FavButton>
+        <View style={styles.buttonsContainer}>
+          <RectButton
+            onPress={handleToggleFavorite}
+            style={[
+              styles.favoriteButton, 
+              isFavorite ? styles.favorited : {},
+            ]}
+          >
+            { isFavorite 
+              ? <Image source={unFavouriteIcon} /> 
+              : <Image source={heartOutlineIcon} />}
+          </RectButton>
 
-          <ContactButton onPress={handleWhatsapp}>
+          <RectButton onPress={handleLinkToWhatsapp} style={styles.contactButton}>
             <Image source={whatsappIcon} />
-            <ContactText>Entrar em contacto</ContactText>
-          </ContactButton>
-        </ButtonsContainer>
-      </Footer>
-    </Container>
+            <Text style={styles.contactButtonText}>Entrar em contacto</Text>
+          </RectButton>
+        </View>
+      </View>
+    </View>
   );
-};
+}
 
 export default TeacherItem;

@@ -1,88 +1,160 @@
-import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native';
 
-export const Container = styled.View`
-  background: #fff;
-  border: 1px solid #e5e6f0;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  overflow: hidden;
-`;
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e6e6f0',
+    borderRadius: 8,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
 
-export const Profile = styled.View`
-  flex-direction: row;
-  align-items: center;
-  padding: 24px;
-`;
+  profile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 24,
+  },
 
-export const Avatar = styled.Image`
-  width: 64px;
-  height: 64px;
-  border-radius: 32px;
-  background: #eee;
-`;
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#eee',
+  },
 
-export const ProfileInfo = styled.View`
-  margin-left: 16px;
-`;
+  profileInfo: {
+    marginLeft: 16,
+  },
 
-export const ProfileName = styled.Text`
-  font: 20px Archivo_700Bold;
-  color: #32264D;
-`;
+  name: {
+    fontFamily: 'Archivo_700Bold',
+    color: '#32264d',
+    fontSize: 20,
+  },
 
-export const Subject = styled.Text`
-  font: 12px Poppins_400Regular;
-  color: #6A6180;
-  margin-top: 4px;
-`;
+  subject: {
+    fontFamily: 'Poppins_400Regular',
+    color: '#6a6180',
+    fontSize: 12,
+    marginTop: 4,
+  },
 
-export const Bio = styled.Text`
-  margin: 0 24px;
-  font: 14px/24px Poppins_400Regular;
-  color: #6A6180;
-`;
+  bio: {
+    marginHorizontal: 24,
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 14,
+    lineHeight: 27,
+    color: '#6a6180',
+    textAlign: 'justify',
+  },
 
-export const Footer = styled.View`
-  background: #fafafc;
-  padding: 24px;
-  align-items: center;
-  margin-top: 24px;
-`;
+  footer: {
+    backgroundColor: '#fafafc',
+    padding: 24,
+    alignItems: 'center',
+    marginTop: 24,
+  },
 
-export const Price = styled.Text`
-  font: 14px Poppins_400Regular;
-  color: #6A6180;
-`;
+  price: {
+    fontFamily: 'Poppins_400Regular',
+    color: '#6a6180',
+    fontSize: 14,
+  },
 
-export const PriceValue = styled.Text`
-  font: 16px Archivo_700Bold;
-  color: #8257E5;
-`;
+  priceValue: {
+    fontFamily: 'Archivo_700Bold',
+    color: '#8257e5',
+    fontSize: 16,
+  },
+  
+  buttonsContainer: {
+    flexDirection: 'row',
+    marginTop: 16,
+  },
 
-export const ButtonsContainer = styled.View`
-  flex-direction: row;
-  margin-top: 16px;
-`;
+  favoriteButton: {
+    backgroundColor: '#8257e5',
+    width: 56,
+    height: 56,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
 
-export const FavButton = styled(RectButton)<{ favorited?: Boolean }>`
-  background: ${(props) => (props.favorited ? '#E33D3D' : '#8257E5')};
-  width: 56px;
-  height: 56px;
-  border-radius: 8px;
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px;
-`;
+  favorited: {
+    backgroundColor: '#e33d3d',
+  },
 
-export const ContactButton = styled(FavButton)`
-  background: #04D361;
-  flex: 1;
-  flex-direction: row;
-`;
+  contactButton: {
+    backgroundColor: '#04d361',
+    flex: 1,
+    height: 56,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
 
-export const ContactText = styled.Text`
-  color: #fff;
-  font: 16px Archivo_700Bold;
-  margin-left: 16px;
-`;
+  contactButtonText: {
+    color: '#fff',
+    fontFamily: 'Archivo_700Bold',
+    fontSize: 16,
+    marginLeft: 16,
+  },
+
+  scheduleContainer: {
+    marginTop: 20,
+
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E6E6F0',
+  },
+
+  title: {
+    fontSize: 10,
+    fontFamily: 'Poppins_400Regular',
+    color: '#9C98A6',
+  },
+
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 11,
+    paddingRight: 33,
+    paddingBottom: 5,
+  },
+
+  dayContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+    borderWidth: 1,
+    borderColor: '#E6E6F0',
+    borderRadius: 8,
+
+    paddingHorizontal: 10,
+    marginBottom: 5,
+  },
+
+  scheduleText: {
+    width: 80,
+    color: '#6A6180',
+    fontSize: 16,
+    fontFamily: 'Archivo_700Bold',
+  },
+
+  priceContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+});
+
+export default styles;

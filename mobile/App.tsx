@@ -1,6 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { AppLoading } from 'expo';
+import { NavigationContainer } from '@react-navigation/native';
 
 import {
   useFonts,
@@ -13,8 +14,8 @@ import {
   Poppins_600SemiBold,
 } from '@expo-google-fonts/poppins';
 
-import AppStack from './src/routes/AppStack';
-import { AuthProvider } from './src/hooks/auth';
+import Routes from './src/routes';
+import AppProvider from './src/hooks';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -29,12 +30,12 @@ export default function App() {
     return <AppLoading />;
   } else {
     return (
-      <>
-        <AuthProvider>
-          < AppStack />
-        </AuthProvider>
-        <StatusBar style="light" />
-      </>
+      <NavigationContainer>
+        <AppProvider>
+          <Routes />
+          <StatusBar style="light" />
+        </AppProvider>
+      </NavigationContainer>
     );
   }
 }

@@ -1,44 +1,67 @@
-import React, { useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-community/async-storage';
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView } from 'react-native';
 
-import { Container, TeacherScroll } from './styles';
 import PageHeader from '../../components/PageHeader';
 import TeacherItem, { Teacher } from '../../components/TeacherItem';
+import api from '../../services/api';
 
-const Favorites: React.FC = () => {
-  const [favorites, setFavorites] = useState([]);
+import styles from './styles'
 
-  useFocusEffect(() => {
-    loadFavs();
-  });
+function Favorites() {
+  const [classes, setClasses] = useState([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
 
-  function loadFavs() {
-    AsyncStorage.getItem('favorites').then((response) => {
+  useEffect(() => {
+    async function loadFavorites(): Promise<void> {
+      const response = await api.get('favorites');
+
       if (response) {
-        const favTeachers = JSON.parse(response);
+        const favoritedTeachers = response.data;
+        const favoriteTeacherIds = favoritedTeachers.map((teacher: any) => {
+          return teacher.teacher_id;
+        })
 
-        setFavorites(favTeachers);
+        setFavorites(favoriteTeacherIds);
       }
-    });
-  }
+    }
 
+    loadFavorites();
+  }, []);
+
+  useEffect(() => {
+    async function loadClasses(): Promise<void> {
+      const response = await api.get('classes');
+
+      setClasses(response.data.Teachers);
+    }
+
+    loadClasses();
+  }, []);
+  
   return (
-    <Container>
-      <PageHeader title="Os meus tutors favoritos" />
+    <View style={styles.container}>
+      <PageHeader title="Tutors Favoritos" />
 
-      <TeacherScroll
+      <ScrollView
+        style={styles.teacherList}
         contentContainerStyle={{
           paddingHorizontal: 16,
           paddingBottom: 16,
         }}
       >
-        {favorites.map((fav: Teacher) => (
-          <TeacherItem key={fav.id} teacher={fav} favorited />
-        ))}
-      </TeacherScroll>
-    </Container>
+        {classes.map((teacher: Teacher) => {
+          return (
+            <TeacherItem 
+              key={teacher?.id}
+              teacher={teacher}
+              favorited={favorites.includes(teacher.id)}
+              show={favorites.includes(teacher.id)}
+            />
+          )
+        } )}
+      </ScrollView>
+    </View>
   );
-};
+}
 
 export default Favorites;

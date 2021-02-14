@@ -1,93 +1,57 @@
-import styled from 'styled-components/native';
-import { RectButton } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native';
 
-export const Container = styled.View`
-  flex: 1;
-  background: #f0f0f7;
-`;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f0f7',
+  },
 
-export const FilterButton = styled.TouchableOpacity`
-  margin-top: -10px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-`;
+  teacherList: {
+    marginTop: -40,
+  },
 
-export const FilterButtonText = styled.Text`
-  color: #D4C2FF;
-  font: 16px Archivo_400Regular;
-`;
+  searchForm: {
+    marginBottom: 24,
+  },
 
-export const Line = styled.View`
-  height: 1px;
-  border: 1px solid #eee;
-  flex: 1;
-  margin-bottom: 20px;
-  opacity: 0.1;
-`;
+  label: {
+    color: '#d4c2ff',
+    fontFamily: 'Poppins_400Regular'
+  },
 
-export const SearchForm = styled.View`
-  margin-bottom: 24px;
-`;
+  inputGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 
-export const Label = styled.Text`
-  color: #D4C2FF;
-  font-family: Poppins_400Regular;
-`;
+  inputBlock: {
+    width: '48%'
+  },
 
-export const Input = styled.TextInput.attrs({
-  placeholderTextColor: '#c1bccc',
-})`
-  height: 54px;
-  background: #fff;
-  border-radius: 8px;
-  justify-content: center;
-  padding: 0 16px;
-  margin-top: 4px;
-  margin-bottom: 16px;
-`;
+  input: {
+    height: 54,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    marginTop: 4,
+    marginBottom: 16,
+  },
 
-export const InputGroup = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-`;
+  submitButton: {
+    backgroundColor: '#04d361',
+    height: 56,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-export const InputBlock = styled.View`
-  width: 48%;
-`;
+  submitButtonText: {
+    color: '#fff',
+    fontFamily: 'Archivo_700Bold',
+    fontSize: 16,
+  },
+})
 
-export const SubmitContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-export const SubmitButton = styled(RectButton)`
-  background: #04D361;
-  width: 75%;
-  height: 56px;
-  border-radius: 8px;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const SubmitText = styled.Text`
-  color: #fff;
-  font: 16px Archivo_700Bold;
-`;
-
-export const Trash = styled.Image`
-  width: 24px;
-  height: 24px;
-`;
-
-export const ClearButton = styled(SubmitButton)`
-  background: #E33D3D;
-  width: 20%;
-  flex-direction: column;
-`;
-
-export const TeacherScroll = styled.ScrollView`
-  margin-top: -40px;
-`;
+export default styles;

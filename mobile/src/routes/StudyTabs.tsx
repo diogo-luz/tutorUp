@@ -7,7 +7,7 @@ import Favorites from '../pages/Favorites';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-const StudyTabs: React.FC = () => {
+const StudyTabs = () => {
   return (
     <Navigator
       tabBarOptions={{
@@ -34,7 +34,7 @@ const StudyTabs: React.FC = () => {
         inactiveBackgroundColor: '#fafafc',
         activeBackgroundColor: '#ebebf5',
         inactiveTintColor: '#c1bccc',
-        activeTintColor: '#8257E5',
+        activeTintColor: '#32264d',
       }}
     >
       <Screen
@@ -42,9 +42,15 @@ const StudyTabs: React.FC = () => {
         component={TeacherList}
         options={{
           tabBarLabel: 'Tutors',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ios-easel" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size, focused }) => {
+            return (
+              <Ionicons
+                name="ios-easel"
+                size={size}
+                color={focused ? '#8257e5' : color}
+              />
+            );
+          },
         }}
       />
       <Screen
@@ -52,9 +58,15 @@ const StudyTabs: React.FC = () => {
         component={Favorites}
         options={{
           tabBarLabel: 'Favoritos',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ios-heart" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size, focused }) => {
+            return (
+              <Ionicons
+                name="ios-heart"
+                size={size}
+                color={focused ? '#8257e5' : color}
+              />
+            );
+          },
         }}
       />
     </Navigator>
