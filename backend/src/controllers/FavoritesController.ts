@@ -23,7 +23,7 @@ export default class FavoritesController {
       class_id,
     });
 
-    return res.send();
+    return res.status(201).send();
   }
 
   async index(req: MyRequest, res: Response) {
