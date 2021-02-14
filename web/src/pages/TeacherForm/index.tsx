@@ -144,9 +144,7 @@ const TeacherForm: React.FC = () => {
           <FormFields>
             <fieldset>
               <legend>Os seus dados</legend>
-              <div className="contactfields">
-                <Input name="whatsapp" label="Whatsapp" />
-              </div>
+              <Input name="whatsapp" label="Whatsapp" />
 
               <Textarea name="bio" label="Biografia" />
             </fieldset>

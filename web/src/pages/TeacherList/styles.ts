@@ -24,7 +24,7 @@ export const SearchTeacher = styled(Form)`
   }
 
   button {
-    height: 4.2rem;
+    height: 5.6rem;
     width: 100%;
     margin-top: 2.4rem;
     display: flex;

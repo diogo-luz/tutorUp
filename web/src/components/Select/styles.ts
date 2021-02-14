@@ -29,14 +29,17 @@ export const SelectBlock = styled.div`
 `;
 
 export const MySelect = styled.select`
+  width: 100%;
   margin-top: 0.8rem;
   margin-bottom: 1.4rem;
   padding: 0 1.6rem;
   font: 400 1.6rem Archivo;
 
-  height: 4.2rem;
+  height: 5.6rem;
   border-radius: 0.8rem;
   outline: 0;
+
   background: var(--color-input-background);
   border: 1px solid var(--color-line-in-white);
+  color: var(--color-text-base);
 `;

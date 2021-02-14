@@ -62,7 +62,7 @@ export const FormFields = styled.div`
       }
     }
 
-    .contactfields {
+    /* .contactfields {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -88,7 +88,7 @@ export const FormFields = styled.div`
           width: 100%;
         }
       }
-    }
+    } */
 
     .subjectfields {
       @media (min-width: 1100px) {
@@ -98,7 +98,7 @@ export const FormFields = styled.div`
       }
 
       input {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;
@@ -106,7 +106,7 @@ export const FormFields = styled.div`
       }
 
       select {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;

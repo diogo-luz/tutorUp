@@ -88,6 +88,7 @@ const Profile: React.FC = () => {
         email: response.data?.email,
         whatsapp: response.data?.whatsapp,
         bio: response.data?.bio,
+        avatar: response.data?.avatar,
       });
     }
 
