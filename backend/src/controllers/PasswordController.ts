@@ -19,7 +19,7 @@ export default class PasswordController {
     let userExists = await db('users').where('email', email);
   
     if (userExists.length === 0) {
-      return res.status(400).json({ error: "We don't a user with that email, please try again." });
+      return res.status(400).json({ error: 'The email provided does not exist' });
     }
 
     const token = uuidv4();
