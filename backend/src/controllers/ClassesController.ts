@@ -82,7 +82,7 @@ export default class ClassesController {
       .join('subjects', 'subjects.id', 'classes.subject_id')
       .select(['classes.*', 'users.*', 'subjects.subject']);
 
-    const countCompatibles = totalClasses.length;
+    const countCompatibles = totalCompatibleClasses.length;
 
     const classes = await db('classes')
       .whereExists(function () {
