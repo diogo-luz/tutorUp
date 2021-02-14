@@ -49,8 +49,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(10)
-        .offset((Number(page) - 1) * 10);
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -68,7 +68,7 @@ export default class ClassesController {
 
     const timeInMinutes = convertHourToMinutes(time);
 
-    const classes = await db('classes')
+    const totalCompatibleClasses = await db('classes')
       .whereExists(function () {
         this.select('class_schedule.*')
           .from('class_schedule')
@@ -82,6 +82,24 @@ export default class ClassesController {
       .join('subjects', 'subjects.id', 'classes.subject_id')
       .select(['classes.*', 'users.*', 'subjects.subject']);
 
+    const countCompatibles = totalClasses.length;
+
+    const classes = await db('classes')
+      .whereExists(function () {
+        this.select('class_schedule.*')
+          .from('class_schedule')
+          .whereRaw('class_schedule.class_id = classes.id')
+          .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
+          .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+          .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+      })
+      .where('classes.subject_id', '=', Number(subject))
+      .join('users', 'classes.owner_id', '=', 'users.id')
+      .join('subjects', 'subjects.id', 'classes.subject_id')
+      .select(['classes.*', 'users.*', 'subjects.subject'])
+      .limit(3)
+      .offset((Number(page) - 1) * 3);
+
     const newClasses = classes.map(async _class => {
       _class.schedule = await db('class_schedule').where(
         'owner_id',
@@ -92,7 +110,7 @@ export default class ClassesController {
 
     const Teachers = await Promise.all(newClasses);
 
-    return res.json({ Teachers, count });
+    return res.json({ Teachers, count: countCompatibles });
   }
 
   async update(req: MyRequest, res: Response) {
