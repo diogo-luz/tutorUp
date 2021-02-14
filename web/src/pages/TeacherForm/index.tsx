@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as Yup from 'yup';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
@@ -13,6 +13,7 @@ import Textarea from '../../components/Textarea';
 import Select from '../../components/Select';
 
 import { useToast } from '../../hooks/toast';
+import { UserData, useAuth } from '../../hooks/auth';
 import getValidationErrors from '../../utils/getValidationErrors';
 
 import warningIcon from '../../assets/images/icons/warning.svg';
@@ -48,8 +49,10 @@ const TeacherForm: React.FC = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
+  const { user, updateUser } = useAuth();
   const { addToast } = useToast();
 
+  const [userData, setUserData] = useState({} as UserData);
   const [scheduleItems, setScheduleItems] = useState<Array<ScheduleItem>>([
     {
       week_day: 0,
@@ -57,6 +60,24 @@ const TeacherForm: React.FC = () => {
       to: '',
     },
   ]);
+
+  useEffect(() => {
+    async function getUserData(): Promise<void> {
+      const response = await api.get('/users');
+
+      setUserData(response.data);
+      if (response.data.schedule) {
+        setScheduleItems(response.data.schedule);
+      }
+
+      formRef.current?.setData({
+        whatsapp: response.data?.whatsapp,
+        bio: response.data?.bio,
+      });
+    }
+
+    getUserData();
+  }, [user]);
 
   const handleSubmit: SubmitHandler<FormData> = async data => {
     try {
