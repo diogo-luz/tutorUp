@@ -52,6 +52,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo_700Bold',
     fontSize: 16,
   },
+
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 40,
+  },
+  
+  filterText: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontFamily: 'Archivo_400Regular',
+    color: '#D4C2FF',
+  },
 })
 
 export default styles;

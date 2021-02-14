@@ -19,12 +19,14 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     maxWidth: 160,
     marginVertical: 40,
+    marginBottom: 20,
   },
 
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    marginBottom: 10,
   }
 })
 
