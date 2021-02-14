@@ -25,6 +25,8 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('users')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
+
+    table.unique(['week_day', 'owner_id']);
   });
 }
 
