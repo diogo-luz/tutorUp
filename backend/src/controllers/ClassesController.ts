@@ -30,6 +30,7 @@ export default class ClassesController {
 
   async index(req: Request, res: Response) {
     const filters = req.query;
+
     const { page = 1 } = req.query;
 
     const subject = filters.subject as string;
@@ -43,13 +44,13 @@ export default class ClassesController {
         .limit(10)
         .offset((Number(page) - 1) * 10);
 
-      const newClasses = classes.map(async classe => {
-        classe.schedule = await db('class_schedule').where(
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
           'owner_id',
-          classe.owner_id,
+          _class.owner_id,
         );
 
-        return classe;
+        return _class;
       });
 
       const Teachers = await Promise.all(newClasses);

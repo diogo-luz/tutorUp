@@ -31,6 +31,6 @@ routes.get('/users', userController.show);
 
 routes.get('/favorites', favController.index);
 routes.post('/favorites', favController.store);
-routes.delete('/favorites/:class_id', favController.delete);
+routes.delete('/favorites/:teacher_id', favController.delete);
 
 export default routes;

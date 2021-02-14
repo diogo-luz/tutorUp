@@ -13,10 +13,10 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete('CASCADE');
 
     table
-      .integer('class_id')
+      .integer('teacher_id')
       .notNullable()
       .references('id')
-      .inTable('classes')
+      .inTable('users')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
   });
