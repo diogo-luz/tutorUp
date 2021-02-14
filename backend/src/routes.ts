@@ -5,6 +5,7 @@ import ConnectionsController from './controllers/ConnectionsController';
 import SessionController from './controllers/SessionController';
 import UserController from './controllers/UserController';
 import FavoritesController from './controllers/FavoritesController';
+import PasswordController from './controllers/PasswordController';
 
 const routes = Router();
 const classesController = new ClassesController();
@@ -12,9 +13,14 @@ const connectionController = new ConnectionsController();
 const sessionController = new SessionController();
 const userController = new UserController();
 const favController = new FavoritesController();
+const passwordController = new PasswordController();
 
 routes.post('/sessions', sessionController.store);
 routes.post('/users', userController.store);
+
+routes.post('/reset-password', passwordController.reset);
+routes.get('/recover-password/:token', passwordController.check);
+routes.patch('/recover-password', passwordController.recover);
 
 routes.use(authMiddleware);
 

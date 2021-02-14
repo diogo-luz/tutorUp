@@ -1,28 +1,49 @@
-import React, { useRef } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { useHistory, Link, useParams } from 'react-router-dom';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import { Form } from '@unform/web';
 import Input from '../../components/InputFloatLabel';
 
 import logoImg from '../../assets/images/logo.svg';
 import backIcon from '../../assets/images/icons/back.svg';
-
 import { ResetPassPage, LogoContent, ResetPassContent } from './styles';
+
 import api from '../../services/api';
 
-interface FormData {
-  name: string;
-  email: string;
+interface RouteParams {
+  token: string;
 }
 
-const ResetPassword: React.FC = () => {
+interface FormData {
+  password: string;
+}
+
+const RecoverPassword: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+
   const history = useHistory();
+  const params = useParams<RouteParams>();
+
+  useEffect(() => {
+    api
+      .get(`/recover-password/${params.token}`)
+      .then(data => {
+        if (data.data.message !== 'valid token') {
+          history.push('/');
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSubmit: SubmitHandler<FormData> = data => {
-    api.post(`/reset-password`, { email: data.email });
-    history.push('/reset-password-success');
+    api.patch('/recover-password', {
+      token: params.token,
+      password: data.password,
+    });
+    history.push('/');
   };
 
   return (
@@ -43,12 +64,12 @@ const ResetPassword: React.FC = () => {
       <ResetPassContent>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <h1>
-            Esqueceu-se da sua senha?
-            <span>Não se preocupe, vamos tratar disso.</span>
+            Recuperar a sua senha
+            <span>Já esta quase para recuperar !</span>
           </h1>
 
           <div className="inputs">
-            <Input label="E-mail" name="email" type="email" />
+            <Input label="Password" name="password" type="password" />
           </div>
 
           <button
@@ -56,12 +77,11 @@ const ResetPassword: React.FC = () => {
             type="submit"
             onClick={() => handleSubmit}
           >
-            Enviar
+            Confirmar
           </button>
         </Form>
       </ResetPassContent>
     </ResetPassPage>
   );
 };
-
-export default ResetPassword;
+export default RecoverPassword;
