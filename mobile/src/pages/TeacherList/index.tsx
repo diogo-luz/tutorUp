@@ -152,7 +152,7 @@ function TeacherList() {
                     <Select
                       selectedValue={week_day}
                       items={[
-                        { value: '', label: 'Selecione' },
+                        { value: '', label: 'Selecionar' },
                         { value: '0', label: 'Domingo' },
                         { value: '1', label: 'Segunda-feira' },
                         { value: '2', label: 'Terça-feira' },
@@ -170,7 +170,7 @@ function TeacherList() {
                     <Select
                       selectedValue={time}
                       items={[
-                        { value: '', label: 'Horas' },
+                        { value: '', label: 'Selecionar' },
                         { value: '01:00', label: '01:00' },
                         { value: '02:00', label: '02:00' },
                         { value: '03:00', label: '03:00' },
