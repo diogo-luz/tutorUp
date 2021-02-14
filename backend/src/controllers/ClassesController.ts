@@ -37,10 +37,18 @@ export default class ClassesController {
     const week_day = filters.week_day as string;
     const time = filters.time as string;
 
+    const totalClasses = await db('classes')
+      .join('users', 'classes.owner_id', '=', 'users.id')
+      .join('subjects', 'subjects.id', 'classes.subject_id')
+      .select(['classes.*', 'users.*', 'subjects.subject']);
+
+    const count = totalClasses.length;
+
     if (!filters.week_day || !filters.subject || !filters.time) {
       const classes = await db('classes')
         .join('users', 'classes.owner_id', '=', 'users.id')
-        .select(['classes.*', 'users.*'])
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
         .limit(10)
         .offset((Number(page) - 1) * 10);
 
@@ -55,7 +63,7 @@ export default class ClassesController {
 
       const Teachers = await Promise.all(newClasses);
 
-      return res.json({ Teachers, count: classes.length });
+      return res.json({ Teachers, count });
     }
 
     const timeInMinutes = convertHourToMinutes(time);
@@ -69,21 +77,22 @@ export default class ClassesController {
           .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
           .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
       })
-      .where('classes.subject', '=', subject)
+      .where('classes.subject_id', '=', Number(subject))
       .join('users', 'classes.owner_id', '=', 'users.id')
-      .select(['classes.*', 'users.*']);
+      .join('subjects', 'subjects.id', 'classes.subject_id')
+      .select(['classes.*', 'users.*', 'subjects.subject']);
 
-    const newClasses = classes.map(async classe => {
-      classe.schedule = await db('class_schedule').where(
+    const newClasses = classes.map(async _class => {
+      _class.schedule = await db('class_schedule').where(
         'owner_id',
-        classe.owner_id,
+        _class.owner_id,
       );
-      return classe;
+      return _class;
     });
 
     const Teachers = await Promise.all(newClasses);
 
-    return res.json({ Teachers, count: classes.length });
+    return res.json({ Teachers, count });
   }
 
   async update(req: MyRequest, res: Response) {
@@ -94,7 +103,7 @@ export default class ClassesController {
 
     try {
       await trx('classes').where('owner_id', id).update({
-        subject,
+        subject_id: subject,
         cost,
       });
 
@@ -152,7 +161,7 @@ export default class ClassesController {
       const insertedClassesIds = await trx('classes')
         .insert({
           owner_id: id,
-          subject,
+          subject_id: subject,
           cost,
         })
         .returning('id');

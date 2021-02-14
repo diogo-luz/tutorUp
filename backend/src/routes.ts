@@ -6,6 +6,7 @@ import SessionController from './controllers/SessionController';
 import UserController from './controllers/UserController';
 import FavoritesController from './controllers/FavoritesController';
 import PasswordController from './controllers/PasswordController';
+import SubjectsController from './controllers/SubjectsController';
 
 const routes = Router();
 const classesController = new ClassesController();
@@ -14,6 +15,7 @@ const sessionController = new SessionController();
 const userController = new UserController();
 const favController = new FavoritesController();
 const passwordController = new PasswordController();
+const subjectsController = new SubjectsController();
 
 routes.post('/sessions', sessionController.store);
 routes.post('/users', userController.store);
@@ -28,6 +30,8 @@ routes.post('/classes', classesController.store);
 routes.put('/classes', classesController.update);
 routes.get('/classes', classesController.index);
 routes.get('/classes/:class_id', classesController.show);
+
+routes.get('/subjects', subjectsController.index);
 
 routes.post('/connections', connectionController.store);
 routes.get('/connections', connectionController.index);

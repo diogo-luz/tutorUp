@@ -3,7 +3,6 @@ import Knex from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('classes', table => {
     table.increments('id').primary();
-    table.string('subject').notNullable();
     table.decimal('cost').notNullable();
 
     table
@@ -11,6 +10,14 @@ export async function up(knex: Knex): Promise<void> {
       .notNullable()
       .references('id')
       .inTable('users')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
+
+    table
+      .integer('subject_id')
+      .notNullable()
+      .references('id')
+      .inTable('subjects')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
   });

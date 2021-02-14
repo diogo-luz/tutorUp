@@ -95,7 +95,9 @@ export default class UserController {
     if (haveClasses.length > 0) {
       userExists = await db('users')
         .where('users.id', id)
-        .join('classes', 'classes.owner_id', 'users.id');
+        .join('classes', 'classes.owner_id', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['users.*', 'classes.*', 'subjects.subject']);
 
       user = userExists[0];
       user.schedule = await db('class_schedule').where('owner_id', id);
