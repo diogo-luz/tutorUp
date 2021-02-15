@@ -118,10 +118,6 @@ export const FormFields = styled.div`
     }
 
     .contactfields {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
       @media (min-width: 1100px) {
         display: grid;
         grid-template-columns: 1.5fr 1fr;
@@ -129,7 +125,7 @@ export const FormFields = styled.div`
       }
 
       input {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;
@@ -137,7 +133,7 @@ export const FormFields = styled.div`
       }
 
       select {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;
@@ -153,7 +149,7 @@ export const FormFields = styled.div`
       }
 
       input {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;
@@ -161,7 +157,7 @@ export const FormFields = styled.div`
       }
 
       select {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;
@@ -170,10 +166,6 @@ export const FormFields = styled.div`
     }
 
     .fields {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
       @media (min-width: 1100px) {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -181,7 +173,7 @@ export const FormFields = styled.div`
       }
 
       input {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;
@@ -189,7 +181,7 @@ export const FormFields = styled.div`
       }
 
       select {
-        width: 16rem;
+        width: 100%;
 
         @media (min-width: 1100px) {
           width: 100%;

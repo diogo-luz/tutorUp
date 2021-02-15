@@ -20,17 +20,16 @@ export const PageContent = styled.main`
     margin-bottom: 3.2rem;
   }
 `;
+
 export const FormFields = styled.div`
   background: var(--color-box-base);
   width: 100%;
   max-width: 74rem;
   border-radius: 0.8rem;
   margin: 0 auto;
+  margin-bottom: 0;
+  padding-bottom: 0;
   padding-top: 3.2rem;
-
-  @media (min-width: 1100px) {
-    margin-bottom: 3.2rem;
-  }
 
   fieldset {
     border: 0;

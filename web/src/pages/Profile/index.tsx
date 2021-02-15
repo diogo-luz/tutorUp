@@ -256,7 +256,7 @@ const Profile: React.FC = () => {
             ) : (
               <>
                 <fieldset>
-                  <legend>Sobre a aula</legend>
+                  <legend>Sobre as aulas</legend>
 
                   <div className="subjectfields">
                     <Select

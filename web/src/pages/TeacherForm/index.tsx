@@ -201,7 +201,7 @@ const TeacherForm: React.FC = () => {
             </fieldset>
 
             <fieldset>
-              <legend>Sobre a aula</legend>
+              <legend>Sobre as aulas</legend>
 
               <div className="subjectfields">
                 <Select name="subject" label="Disciplina" options={subjects} />
