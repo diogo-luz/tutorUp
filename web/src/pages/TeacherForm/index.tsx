@@ -60,7 +60,7 @@ const TeacherForm: React.FC = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const { addToast } = useToast();
 
   const [subjects, setSubjects] = useState<Array<Data>>([]);

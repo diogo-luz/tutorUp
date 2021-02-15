@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Linking from 'expo-linking';
+import { Linking } from 'react-native';
 
 import {
   Container,
@@ -7,6 +7,7 @@ import {
   Title,
   Description,
   Button,
+  WebButton,
   TextButton,
 } from './styles';
 
@@ -20,6 +21,10 @@ const GiveClasses: React.FC = () => {
     navigation.goBack();
   }
 
+  function handleLinkToWeb() {
+    Linking.openURL('https://google.pt');
+  }
+
   return (
     <Container>
       <Background resizeMode="contain" source={giveClassesBg}>
@@ -29,9 +34,14 @@ const GiveClasses: React.FC = () => {
         </Description>
       </Background>
 
+      <WebButton onPress={handleLinkToWeb}>
+        <TextButton>Ir para versão web</TextButton>
+      </WebButton>
+
       <Button onPress={handleAcess}>
-        <TextButton>Entendido</TextButton>
+        <TextButton>Voltar</TextButton>
       </Button>
+
     </Container>
   );
 };

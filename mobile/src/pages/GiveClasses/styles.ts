@@ -28,9 +28,19 @@ export const Description = styled.Text`
   max-width: 240px;
 `;
 
-export const Button = styled(RectButton)`
+export const WebButton = styled(RectButton)`
   margin: 40px 0;
   background: #04D361;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+`;
+
+export const Button = styled(RectButton)`
+  margin-bottom: 10px;
+  margin-top: -10px;
+  background: #9871F5;
   height: 58px;
   align-items: center;
   justify-content: center;
