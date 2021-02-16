@@ -34,7 +34,8 @@ const Dashboard: React.FC = () => {
   const handleLogOut = useCallback(() => {
     signOut();
 
-    window.location.reload(false);
+    // eslint-disable-next-line no-restricted-globals
+    location.replace('/');
   }, [signOut]);
 
   return (

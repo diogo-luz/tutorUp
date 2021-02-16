@@ -13,7 +13,7 @@ import Textarea from '../../components/Textarea';
 import Select from '../../components/Select';
 
 import { useToast } from '../../hooks/toast';
-import { UserData, useAuth } from '../../hooks/auth';
+import { useAuth } from '../../hooks/auth';
 import getValidationErrors from '../../utils/getValidationErrors';
 
 import warningIcon from '../../assets/images/icons/warning.svg';
@@ -79,7 +79,6 @@ const TeacherForm: React.FC = () => {
     getSubjects();
   }, []);
 
-  const [userData, setUserData] = useState({} as UserData);
   const [scheduleItems, setScheduleItems] = useState<Array<ScheduleItem>>([
     {
       id: 0,
@@ -93,7 +92,6 @@ const TeacherForm: React.FC = () => {
     async function getUserData(): Promise<void> {
       const response = await api.get('/users');
 
-      setUserData(response.data);
       if (response.data.schedule) {
         setScheduleItems(response.data.schedule);
       }

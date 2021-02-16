@@ -71,22 +71,6 @@ const Profile: React.FC = () => {
   const { user, updateUser } = useAuth();
   const { addToast } = useToast();
 
-  const [subjects, setSubjects] = useState<Array<Data>>([]);
-
-  useEffect(() => {
-    async function getSubjects(): Promise<void> {
-      const response = await api.get('/subjects');
-
-      const allSubjects = await response.data.map(
-        ({ id: value, subject: label }: Subject) => ({ value, label }),
-      );
-
-      setSubjects(allSubjects);
-    }
-
-    getSubjects();
-  }, []);
-
   const [userData, setUserData] = useState({} as UserData);
   const [scheduleItems, setScheduleItems] = useState<Array<ScheduleItem>>([
     {
@@ -204,6 +188,22 @@ const Profile: React.FC = () => {
     setScheduleItems(array);
   }
 
+  const [subjects, setSubjects] = useState<Array<Data>>([]);
+
+  useEffect(() => {
+    async function getSubjects(): Promise<void> {
+      const response = await api.get('/subjects');
+
+      const allSubjects = await response.data.map(
+        ({ id: value, subject: label }: Subject) => ({ value, label }),
+      );
+
+      setSubjects(allSubjects);
+    }
+
+    getSubjects();
+  }, []);
+
   return (
     <ProfilePage>
       <PageHeader>
@@ -261,7 +261,7 @@ const Profile: React.FC = () => {
                   <div className="subjectfields">
                     <Select
                       name="subject"
-                      value={userData.subject}
+                      value={userData.subject_id}
                       label="Disciplina"
                       options={subjects}
                     />

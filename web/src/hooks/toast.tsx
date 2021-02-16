@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useCallback, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { useLocation } from 'react-router-dom';
 
 import ToastContainer from '../components/ToastContainer';
 
@@ -40,6 +41,11 @@ export const ToastProvider: React.FC = ({ children }) => {
   const removeToast = useCallback((id: string) => {
     setMessages(state => state.filter(message => message.id !== id));
   }, []);
+
+  const location = useLocation();
+  if (location.pathname.match('dashboard')) {
+    return <>{children}</>;
+  }
 
   return (
     <ToastContext.Provider value={{ addToast, removeToast }}>

@@ -30,6 +30,7 @@ export interface UserData {
   whatsapp: string;
   avatar: string;
   subject: string;
+  subject_id: number;
   cost: number;
   schedule?: Array<ScheduleObj>;
 }
