@@ -8,6 +8,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Alert
 } from 'react-native';
 import { TouchableOpacity, RectButton } from 'react-native-gesture-handler';
 
@@ -41,8 +42,12 @@ const SignIn = () => {
   }, []);
 
   const handleSubmit = useCallback(async (data: FormData) => {
-    const { email, password } = data;
-    await signIn({ email, password, remember });
+    try {
+      const { email, password } = data;
+      await signIn({ email, password, remember });
+    } catch {
+      Alert.alert('Erro na autenticação', 'Ocorreu um erro ao iniciar sessão, verifique os dados e tente novamente.')
+    }
   }, [remember]);
 
   const handleRemember = useCallback(() => {

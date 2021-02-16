@@ -17,7 +17,12 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.luxware.tutorup",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.luxware.tutorup",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

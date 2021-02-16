@@ -151,7 +151,7 @@ const Profile = () => {
                 </View>
 
                 <View style={styles.footer}>
-                  <Button title="Salvar alterações" onPress={handleSubmit} />
+                  <Button title="Guardar alterações" onPress={handleSubmit} />
                   <View style={styles.warningContainer}>
                     <Image source={attentionIcon} style={{ marginRight: 10 }} />
                     <View>
