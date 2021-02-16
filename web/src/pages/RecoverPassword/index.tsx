@@ -58,16 +58,30 @@ const RecoverPassword: React.FC = () => {
 
       await schema.validate(data, { abortEarly: false });
 
-      api.patch('/recover-password', {
+      const resp = await api.patch('/recover-password', {
         token: params.token,
         password: data.password,
       });
 
+      let type: 'success' | 'error' | 'info';
+      let title;
+      let description;
+
+      if (resp.status === 204) {
+        type = 'success';
+        title = 'Senha alterada com sucesso';
+        description = 'Já pode começar a utilizar a sua conta com a nova senha';
+      } else {
+        type = 'error';
+        title = 'Ocorreu um erro';
+        description =
+          'Ocorreu um erro ao atualizar a sua senha,, tente novamente';
+      }
       // disparar um toast
       addToast({
-        type: 'success',
-        title: 'Senha alterada com sucesso',
-        description: 'Já pode começar a utilizar a sua conta com a nova senha',
+        type,
+        title,
+        description,
       });
 
       history.push('/');
