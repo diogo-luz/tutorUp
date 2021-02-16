@@ -8,7 +8,9 @@
     "dev": "tsnd --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "knex:migrate": "knex --knexfile knexfile.ts migrate:latest",
     "knex:rollback": "knex --knexfile knexfile.ts migrate:rollback",
-    "build": "tsc",
+    "knex:seed": "knex --knexfile dist/knexfile.js seed:run",
+    "build": "tsc && npm run copy-files",
+    "copy-files": "cp -R src/views dist/src/",
     "debug": "tsnd --inspect --transpile-only --ignore-watch node_modules --respawn src/server.ts"
   },
   "devDependencies": {
