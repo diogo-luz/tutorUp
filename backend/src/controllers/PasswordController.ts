@@ -92,11 +92,11 @@ export default class PasswordController {
 
     const userToken = await db('user_tokens').where('token', token);
 
-    console.log(userToken);
+    if (userToken.length <= 0) {
+      return res.status(404).json({ message: 'Invalid Token' });
+    }
 
     const userExists = await db('users').where('id', '=', userToken[0].user_id);
-
-    console.log(userExists);
 
     if (userToken[0] && userExists[0]) {
       const twoHoursAfter = addHours(parseISO(userToken[0].created_at), 2);
