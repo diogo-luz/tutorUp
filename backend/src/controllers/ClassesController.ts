@@ -44,7 +44,7 @@ export default class ClassesController {
 
     const count = totalClasses.length;
 
-    if (!filters.week_day || !filters.subject || !filters.time) {
+    if (!filters.week_day && !filters.subject && !filters.time) {
       const classes = await db('classes')
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
@@ -66,51 +66,313 @@ export default class ClassesController {
       return res.json({ Teachers, count });
     }
 
-    const timeInMinutes = convertHourToMinutes(time);
+    if (filters.week_day && filters.subject && filters.time) {
+      const timeInMinutes = convertHourToMinutes(time);
 
-    const totalCompatibleClasses = await db('classes')
-      .whereExists(function () {
-        this.select('class_schedule.*')
-          .from('class_schedule')
-          .whereRaw('class_schedule.class_id = classes.id')
-          .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
-          .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
-          .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
-      })
-      .where('classes.subject_id', '=', Number(subject))
-      .join('users', 'classes.owner_id', '=', 'users.id')
-      .join('subjects', 'subjects.id', 'classes.subject_id')
-      .select(['classes.*', 'users.*', 'subjects.subject']);
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
 
-    const countCompatibles = totalCompatibleClasses.length;
+      const countCompatibles = totalCompatibleClasses.length;
 
-    const classes = await db('classes')
-      .whereExists(function () {
-        this.select('class_schedule.*')
-          .from('class_schedule')
-          .whereRaw('class_schedule.class_id = classes.id')
-          .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
-          .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
-          .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
-      })
-      .where('classes.subject_id', '=', Number(subject))
-      .join('users', 'classes.owner_id', '=', 'users.id')
-      .join('subjects', 'subjects.id', 'classes.subject_id')
-      .select(['classes.*', 'users.*', 'subjects.subject'])
-      .limit(3)
-      .offset((Number(page) - 1) * 3);
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
 
-    const newClasses = classes.map(async _class => {
-      _class.schedule = await db('class_schedule').where(
-        'owner_id',
-        _class.owner_id,
-      );
-      return _class;
-    });
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
 
-    const Teachers = await Promise.all(newClasses);
+      const Teachers = await Promise.all(newClasses);
 
-    return res.json({ Teachers, count: countCompatibles });
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    if (filters.week_day && filters.subject && !filters.time) {
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)]);
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
+
+      const countCompatibles = totalCompatibleClasses.length;
+
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)]);
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
+
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
+
+      const Teachers = await Promise.all(newClasses);
+
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    if (filters.week_day && !filters.subject && filters.time) {
+      const timeInMinutes = convertHourToMinutes(time);
+
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
+
+      const countCompatibles = totalCompatibleClasses.length;
+
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)])
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
+
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
+
+      const Teachers = await Promise.all(newClasses);
+
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    if (!filters.week_day && filters.subject && filters.time) {
+      const timeInMinutes = convertHourToMinutes(time);
+
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
+
+      const countCompatibles = totalCompatibleClasses.length;
+
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
+
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
+
+      const Teachers = await Promise.all(newClasses);
+
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    if (filters.week_day && !filters.subject && !filters.time) {
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)]);
+        })
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
+
+      const countCompatibles = totalCompatibleClasses.length;
+
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.week_day = ??', [Number(week_day)]);
+        })
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
+
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
+
+      const Teachers = await Promise.all(newClasses);
+
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    if (!filters.week_day && filters.subject && !filters.time) {
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id');
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
+
+      const countCompatibles = totalCompatibleClasses.length;
+
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id');
+        })
+        .where('classes.subject_id', '=', Number(subject))
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
+
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
+
+      const Teachers = await Promise.all(newClasses);
+
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    if (!filters.week_day && !filters.subject && filters.time) {
+      const timeInMinutes = convertHourToMinutes(time);
+
+      const totalCompatibleClasses = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject']);
+
+      const countCompatibles = totalCompatibleClasses.length;
+
+      const classes = await db('classes')
+        .whereExists(function () {
+          this.select('class_schedule.*')
+            .from('class_schedule')
+            .whereRaw('class_schedule.class_id = classes.id')
+            .whereRaw('class_schedule.from_minutes <= ??', [timeInMinutes])
+            .whereRaw('class_schedule.to_minutes > ??', [timeInMinutes]);
+        })
+        .join('users', 'classes.owner_id', '=', 'users.id')
+        .join('subjects', 'subjects.id', 'classes.subject_id')
+        .select(['classes.*', 'users.*', 'subjects.subject'])
+        .limit(3)
+        .offset((Number(page) - 1) * 3);
+
+      const newClasses = classes.map(async _class => {
+        _class.schedule = await db('class_schedule').where(
+          'owner_id',
+          _class.owner_id,
+        );
+        return _class;
+      });
+
+      const Teachers = await Promise.all(newClasses);
+
+      return res.json({ Teachers, count: countCompatibles });
+    }
+
+    return res.status(404);
   }
 
   async update(req: MyRequest, res: Response) {
