@@ -31,7 +31,7 @@ export default class ClassesController {
   async index(req: Request, res: Response) {
     const filters = req.query;
 
-    const { page = 1 } = req.query;
+    const { page } = req.query;
 
     const subject = filters.subject as string;
     const week_day = filters.week_day as string;
@@ -49,8 +49,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -98,8 +98,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -140,8 +140,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -186,8 +186,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -232,8 +232,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -272,8 +272,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -312,8 +312,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
@@ -356,8 +356,8 @@ export default class ClassesController {
         .join('users', 'classes.owner_id', '=', 'users.id')
         .join('subjects', 'subjects.id', 'classes.subject_id')
         .select(['classes.*', 'users.*', 'subjects.subject'])
-        .limit(3)
-        .offset((Number(page) - 1) * 3);
+        .limit(8)
+        .offset((Number(page) - 1) * 8);
 
       const newClasses = classes.map(async _class => {
         _class.schedule = await db('class_schedule').where(
