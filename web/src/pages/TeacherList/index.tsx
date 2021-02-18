@@ -71,7 +71,7 @@ const TeacherList: React.FC = () => {
   }) => {
     const response = await api.get('/classes', {
       params: {
-        page,
+        page: 1,
         subject,
         week_day,
         time,
@@ -87,11 +87,7 @@ const TeacherList: React.FC = () => {
   }
 
   function getCount(counterNumber: number): number {
-    if (counterNumber % 2 !== 0) {
-      return counterNumber < 3 ? 1 : Math.round(counterNumber / 3) + 1;
-    }
-
-    return counterNumber < 3 ? 1 : Math.round(counterNumber / 3);
+    return Math.ceil(counterNumber / 8);
   }
 
   return (
