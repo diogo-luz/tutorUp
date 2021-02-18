@@ -21,7 +21,6 @@ import SuccessSignUp from '../pages/SuccessSignUp';
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={SignIn} />
-    <Route path="*" component={PageNotFound} />
     <Route path="/signup" exact component={SignUp} />
 
     <Route path="/signup-success" exact component={SuccessSignUp} />
@@ -47,6 +46,8 @@ const Routes: React.FC = () => (
       component={SuccessClasses}
       isPrivate
     />
+
+    <Route component={PageNotFound} />
   </Switch>
 );
 
