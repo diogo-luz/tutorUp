@@ -108,14 +108,21 @@ const Profile: React.FC = () => {
   const handleSubmit: SubmitHandler<FormData> = async data => {
     try {
       const schema = Yup.object().shape({
-        name: Yup.string(),
-        lastname: Yup.string(),
-        whatsapp: Yup.string(),
-        email: Yup.string(),
+        name: Yup.string().required('Introduza um nome válido'),
+        lastname: Yup.string().required('Introduza um sobrenome válido'),
+        whatsapp: Yup.string().min(9, 'No mínimo 9 caracteres'),
+        email: Yup.string()
+          .required('Introduza um email')
+          .email('Introduza um email válido'),
         avatar: Yup.string(),
-        bio: Yup.string().max(255),
+        bio: Yup.string().max(
+          255,
+          'Deve conter uma biografia de apenas 255 caracteres',
+        ),
         subject: Yup.string(),
-        cost: Yup.number(),
+        cost: Yup.number()
+          .typeError('Introduza um número válido')
+          .positive('O valor deve ser positivo'),
         schedule: Yup.array().of(
           Yup.object().shape({
             week_day: Yup.number(),

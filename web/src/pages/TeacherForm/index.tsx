@@ -112,10 +112,16 @@ const TeacherForm: React.FC = () => {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
-        whatsapp: Yup.string().required(),
-        bio: Yup.string().max(255).required(),
+        whatsapp: Yup.string().min(9, 'No mínimo 9 caracteres'),
+        bio: Yup.string().max(
+          255,
+          'Deve conter uma biografia de apenas 255 caracteres',
+        ),
         subject: Yup.string().required(),
-        cost: Yup.number().required('Deve fornecer um preço para as aulas'),
+        cost: Yup.number()
+          .typeError('Introduza um número válido')
+          .required('Deve fornecer um preço para as aulas')
+          .positive('O valor deve ser positivo'),
         schedule: Yup.array().of(
           Yup.object().shape({
             week_day: Yup.number(),
